@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Safe Drive",
+    "slug": "safe-drive",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#2563eb"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Sürüş analizi için konumunuza ihtiyacımız var.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Sürüş analizi için arka planda konum gerekir.",
+        "NSMotionUsageDescription": "Sürüş davranışı analizi için ivmeölçer ve jiroskop verilerine ihtiyacımız var."
+      }
+    },
+    "android": {
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACTIVITY_RECOGNITION"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#2563eb"
+      }
+    },
+    "extra": {
+      "apiUrl": "http://10.0.2.2:5000"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+# Node modülleri
+node_modules/
+*/node_modules/
+
+# Çevre değişkenleri — ASLA commit etme
+.env
+.env.local
+.env.production
+*/.env
+*/.env.local
+
+# Build çıktıları
+dist/
+build/
+*/dist/
+*/build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Expo / React Native
+.expo/
+*.apk
+*.ipa
+*.aab
+android/build/
+ios/build/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Testler ve cache
+coverage/
+.nyc_output/
+.cache/
+
+# Bağımsız dosyalar
+*.tgz
+*.bak
