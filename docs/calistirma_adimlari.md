@@ -77,7 +77,7 @@ netsh advfirewall firewall add rule name="SafeDrive Expo 8081" dir=in action=all
 > 5000 = backend, 8081 = Expo Metro (uygulama paketini telefona gönderir).
 > Bunlar olmadan iPhone bağlanamaz; "Network Error" görürsen sebep budur.
 
-> **Not:** Mobil uygulama **Expo SDK 56** (React Native 0.85) ile günceldir; iPhone'daki **Expo Go**'nun App Store'dan güncel sürümü olmalı.
+> **Not:** Mobil uygulama **Expo SDK 54** (React Native 0.81) hedefler — iPhone 8 dahil eski cihazların App Store'dan kurduğu güncel Expo Go (SDK 54) ile uyumludur. (Çok yeni cihazlar da SDK 54 projesini açabilir.)
 
 ### 2. Aynı WiFi
 iPhone ve bilgisayar **aynı ağda** olmalı. Bilgisayarın IP'si: **`192.168.1.116`**
