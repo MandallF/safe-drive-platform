@@ -68,12 +68,16 @@ alarmların düştüğünü göster → Sürüşler ve Alarmlar sayfalarını ge
 
 ## B) iPhone ile Gerçek Sürüş Demosu
 
-### 1. Firewall — port 5000'i aç (TEK SEFER, admin gerekir)
-**Yönetici** PowerShell aç (Başlat → "PowerShell" → sağ tık → Yönetici olarak çalıştır):
+### 1. Firewall — port 5000 ve 8081'i aç (TEK SEFER, admin gerekir)
+**Yönetici** PowerShell aç (Başlat → "PowerShell" → sağ tık → Yönetici olarak çalıştır) ve iki komutu da çalıştır:
 ```powershell
 netsh advfirewall firewall add rule name="SafeDrive 5000" dir=in action=allow protocol=TCP localport=5000
+netsh advfirewall firewall add rule name="SafeDrive Expo 8081" dir=in action=allow protocol=TCP localport=8081
 ```
-> Bu olmadan iPhone backend'e ulaşamaz. iPhone'da "Network Error" görürsen sebep budur.
+> 5000 = backend, 8081 = Expo Metro (uygulama paketini telefona gönderir).
+> Bunlar olmadan iPhone bağlanamaz; "Network Error" görürsen sebep budur.
+
+> **Not:** Mobil uygulama **Expo SDK 56** (React Native 0.85) ile günceldir; iPhone'daki **Expo Go**'nun App Store'dan güncel sürümü olmalı.
 
 ### 2. Aynı WiFi
 iPhone ve bilgisayar **aynı ağda** olmalı. Bilgisayarın IP'si: **`192.168.1.116`**
