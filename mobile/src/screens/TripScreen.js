@@ -35,6 +35,10 @@ export default function TripScreen({ navigation }) {
   const bufferRef = useRef([]);     // batch'lenmemiş sampleslar
   const deviceUuidRef = useRef(null);
   const flushIntervalRef = useRef(null);
+  // ÖNEMLİ: trip'i ayrıca ref'te tutuyoruz. setInterval(flushBatch) bir kez
+  // kurulur ve o anki closure'daki `trip` state'ini (null) hatırlar; bu yüzden
+  // batch gönderimi "trip yok" deyip çalışmazdı. Ref her zaman güncel değeri verir.
+  const tripRef = useRef(null);
 
   // ----- Trip başlat -----
   useEffect(() => {
@@ -54,7 +58,8 @@ export default function TripScreen({ navigation }) {
 
         // 3) Backend'te trip aç
         const res = await api.post('/trips/start', { deviceUuid });
-        setTrip(res.data.trip);
+        tripRef.current = res.data.trip;   // interval'in okuyacağı güncel değer
+        setTrip(res.data.trip);            // UI için state
 
         // 4) Önceki offline kuyruğu varsa boşalt
         await flushOfflineBuffer();
@@ -85,14 +90,16 @@ export default function TripScreen({ navigation }) {
    * Hata durumunda OfflineBuffer'a yaz, sonra dene.
    */
   async function flushBatch() {
-    if (bufferRef.current.length === 0 || !trip) return;
+    // State yerine ref kullan — setInterval closure'ı state'i null gördüğü için.
+    const currentTrip = tripRef.current;
+    if (bufferRef.current.length === 0 || !currentTrip) return;
 
     const batch = bufferRef.current;
     bufferRef.current = []; // reset
 
     const samples = batch.map((s) => ({
       ...s,
-      tripId: trip._id,
+      tripId: currentTrip._id,
       deviceUuid: deviceUuidRef.current
     }));
 

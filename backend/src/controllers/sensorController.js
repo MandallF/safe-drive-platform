@@ -98,13 +98,16 @@ exports.ingest = async (req, res, next) => {
       }
     }
 
-    // Canlı veri yayını — frontend dashboard zaman serisi grafiğine ekleyebilsin
+    // Canlı veri yayını — frontend dashboard zaman serisi grafiğine ekleyebilsin.
+    // Mobil her ~3sn'de bir batch (birkaç örnek) gönderir. Sadece sonuncuyu
+    // yayınlarsak grafik 3sn'de 1 nokta ile tıkır tıkır ilerler; bunun yerine
+    // batch'teki HER örneği yayınlıyoruz ki grafik dolu ve akıcı görünsün.
     const io = getSocketIO();
     if (io) {
-      // Son sample'ı (en güncel) gönder — saniyede 2 emit yetiyor
-      const latest = docs[docs.length - 1];
-      io.to(`user:${userId}`).emit('sensor:data', latest);
-      io.to(`trip:${trip._id}`).emit('sensor:data', latest);
+      for (const sample of docs) {
+        io.to(`user:${userId}`).emit('sensor:data', sample);
+        io.to(`trip:${trip._id}`).emit('sensor:data', sample);
+      }
     }
 
     res.status(201).json({
