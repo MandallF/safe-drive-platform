@@ -32,10 +32,13 @@ class SensorService {
 
     // Son okunan değerler — sensör event'leri buraya yazar, timer buradan okur
     this.last = {
-      accel: { x: 0, y: 0, z: 9.8 },
+      accel: { x: 0, y: 0, z: 0 },   // LİNEER (yerçekimsiz) ivme — gerçek hareket
       gyro: { x: 0, y: 0, z: 0 },
       location: null
     };
+    // Yerçekimi tahmini (low-pass filtre). Ham ivmeden çıkarınca telefonun
+    // gerçek hareket ivmesi kalır; dik tutulan telefonda sabit ~9.8 offset gider.
+    this.gravity = { x: 0, y: 0, z: 0 };
   }
 
   /**
@@ -63,10 +66,29 @@ class SensorService {
     Accelerometer.setUpdateInterval(200);
     Gyroscope.setUpdateInterval(200);
 
-    // İvmeölçer (Expo birimi: G — yerçekimi katı. m/s²'ye çevirmek için *9.81)
+    // İvmeölçer (Expo birimi: G; ×9.81 → m/s²). Ham ivme YERÇEKİMİNİ İÇERİR;
+    // telefon dik tutulunca bir eksen sürekli ~-9.8 okur (kullanıcının gördüğü
+    // "sürekli negatif" değerin sebebi buydu). Sürüş analizi için yerçekimini
+    // low-pass filtre ile tahmin edip çıkarıyoruz → LİNEER ivme:
+    //   durağan telefon ≈ 0, gerçek fren/dönüş/çukurda sıçrar (eşiklerle uyumlu).
+    const GRAVITY_ALPHA = 0.8; // yüksek = yerçekimi tahmini yavaş değişir
+    let gravityReady = false;  // ilk örnekte yerçekimini direkt ata (başlangıç sıçramasını önle)
     this.subscriptions.push(
       Accelerometer.addListener(({ x, y, z }) => {
-        this.last.accel = { x: x * 9.81, y: y * 9.81, z: z * 9.81 };
+        const ax = x * 9.81, ay = y * 9.81, az = z * 9.81;
+        if (!gravityReady) {
+          this.gravity = { x: ax, y: ay, z: az };
+          gravityReady = true;
+        } else {
+          this.gravity.x = GRAVITY_ALPHA * this.gravity.x + (1 - GRAVITY_ALPHA) * ax;
+          this.gravity.y = GRAVITY_ALPHA * this.gravity.y + (1 - GRAVITY_ALPHA) * ay;
+          this.gravity.z = GRAVITY_ALPHA * this.gravity.z + (1 - GRAVITY_ALPHA) * az;
+        }
+        this.last.accel = {
+          x: ax - this.gravity.x,
+          y: ay - this.gravity.y,
+          z: az - this.gravity.z
+        };
       })
     );
 
@@ -85,11 +107,13 @@ class SensorService {
         distanceInterval: 1
       },
       (loc) => {
+        // speed m/s gelir; iOS GPS hızı geçersizken -1 döndürür (durağan/kapalı mekân).
+        // Negatif/geçersiz değeri 0 say — ekranda "−3.6 km/h" yerine "0 km/h" görünsün.
+        const spd = loc.coords.speed;
         this.last.location = {
           lat: loc.coords.latitude,
           lon: loc.coords.longitude,
-          // speed m/s gelir — km/h'a çevir (×3.6). null ise 0 say.
-          speed: loc.coords.speed ? loc.coords.speed * 3.6 : 0
+          speed: (typeof spd === 'number' && spd > 0) ? spd * 3.6 : 0
         };
       }
     );
