@@ -44,3 +44,7 @@ coverage/
 # Bağımsız dosyalar
 *.tgz
 *.bak
+
+# Teslim paketi (büyük zip — repoya dahil edilmez)
+teslim/
+*.zip

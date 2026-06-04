@@ -1,0 +1,36 @@
+GÜVENLİ SÜRÜŞ VE SÜRÜCÜ DAVRANIŞI ANALİZİ PLATFORMU
+Bursa Teknik Üniversitesi - Bilgisayar Mühendisliği
+Node.js ile Web Programlama - Dönem Projesi (Senaryo 1)
+====================================================================
+
+GRUP ÜYELERİ
+- 23360859019   Melike Rana Yozgatlı
+- 23360859034   Selen Yakın
+- 23360859739   Talha Korkmaz
+- 22360859047   Kubilay İnanç
+
+BAĞLANTILAR
+- GitHub deposu : https://github.com/MandallF/safe-drive-platform
+- Demo videosu  : (YouTube'a yükledikten sonra linki buraya yapıştırın)
+
+DEMO HESAPLARI
+- Sürücü : driver@example.com / driver123
+- Admin  : admin@example.com / admin123
+
+PAKET İÇERİĞİ
+- backend/     Node.js + Express + MongoDB + Socket.io (API, anomali motoru)
+- mobile/      React Native (Expo) mobil uygulama
+- dashboard/   React web paneli (canlı grafik, harita, alarmlar)
+- docs/        API dokümantasyonu, kurulum kılavuzu, sistem mimarisi,
+               veri modeli, sunum notları, demo videosu rehberi
+- sunum/       Proje raporu (.docx + .pdf) ve sunum (.pptx + .pdf)
+- KURULUM.md   Sıfırdan (yeni bilgisayarda) kurulum adımları
+- README.md    Genel bilgi ve hızlı başlangıç
+
+ÇALIŞTIRMA (özet)
+1. Node.js ve MongoDB kurulu olmalı (MongoDB servis olarak çalışır durumda).
+2. kurulum.bat  -> bağımlılıkları kurar, .env oluşturur, örnek veriyi yükler (tek seferlik).
+3. baslat.bat   -> backend + web paneli + simülatörü başlatır, tarayıcıda açar.
+   (Ayrıntılı adımlar ve telefon ile canlı demo: KURULUM.md ve docs/ klasörü)
+
+NOT: Bu pakette node_modules yer almaz; "npm install" (veya kurulum.bat) ile kurulur.
