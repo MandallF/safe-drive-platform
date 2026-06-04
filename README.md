@@ -38,6 +38,8 @@ safe-drive-platform/
 
 ## Hızlı Başlangıç
 
+> 🆕 **Sıfırdan yeni bir bilgisayarda mı kuruyorsun?** (ör. sunum laptopu) → [`KURULUM.md`](KURULUM.md)'ye bak. Kurduktan sonra **`kurulum.bat`** (tek seferlik) ve **`baslat.bat`** (her çalıştırma) ile tek tıkla yönetebilirsin.
+
 MongoDB'nin çalıştığından emin olun (yerel kurulumda servis otomatik başlar).
 
 ### 1. Backend
