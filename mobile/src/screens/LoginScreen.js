@@ -24,7 +24,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>🚗 Safe Drive</Text>
+      <Text style={styles.logo}>Safe Drive</Text>
       <Text style={styles.subtitle}>Sürücü Mobil İstemcisi</Text>
 
       <Text style={styles.label}>Email</Text>

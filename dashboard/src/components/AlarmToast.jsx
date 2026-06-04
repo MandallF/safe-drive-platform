@@ -42,7 +42,7 @@ export default function AlarmToastContainer() {
       {toasts.map((alarm) => (
         <div key={alarm._id} className="toast">
           <div className="toast-title">
-            ⚠️ {SEVERITY_LABELS[alarm.type] || alarm.type}
+            {SEVERITY_LABELS[alarm.type] || alarm.type}
             <span className={`badge ${alarm.severity}`} style={{ marginLeft: 8 }}>
               {alarm.severity}
             </span>

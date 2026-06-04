@@ -18,7 +18,7 @@ export default function Layout() {
   return (
     <div className="app-layout">
       <aside className="sidebar">
-        <h2>🚗 Safe Drive</h2>
+        <h2>Safe Drive</h2>
         <nav>
           <NavLink to="/dashboard">Dashboard</NavLink>
           <NavLink to="/trips">Sürüşler</NavLink>

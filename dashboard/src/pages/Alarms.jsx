@@ -69,7 +69,7 @@ export default function Alarms() {
             </thead>
             <tbody>
               {alarms.length === 0 && (
-                <tr><td colSpan="7" style={{ textAlign: 'center', padding: 30, color: '#6b7280' }}>Alarm yok 🎉</td></tr>
+                <tr><td colSpan="7" style={{ textAlign: 'center', padding: 30, color: '#6b7280' }}>Kayıtlı alarm bulunmuyor.</td></tr>
               )}
               {alarms.map((a) => (
                 <tr key={a._id} style={{ opacity: a.isRead ? 0.6 : 1 }}>

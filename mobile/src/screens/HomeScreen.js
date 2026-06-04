@@ -46,7 +46,6 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       <TouchableOpacity style={styles.bigButton} onPress={startTrip}>
-        <Text style={styles.bigButtonIcon}>🚗</Text>
         <Text style={styles.bigButtonText}>Sürüş Başlat</Text>
         <Text style={styles.bigButtonHint}>Sensörler aktive edilecek</Text>
       </TouchableOpacity>

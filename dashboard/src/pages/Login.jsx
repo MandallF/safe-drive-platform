@@ -30,7 +30,7 @@ export default function Login() {
   return (
     <div className="auth-container">
       <form onSubmit={handleSubmit} className="auth-card">
-        <h1>🚗 Safe Drive</h1>
+        <h1>Safe Drive</h1>
         <p className="subtitle">Sürücü davranış analizi paneli</p>
 
         {error && <div className="error-banner">{error}</div>}
