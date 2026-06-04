@@ -13,6 +13,20 @@
 
 ---
 
+## Özet
+
+Bu çalışmada, akıllı telefonu araç içinde bir IoT cihazı gibi kullanan, sürücü davranışlarını gerçek zamanlı analiz eden tam yığın (full-stack) bir platform geliştirilmiştir. Telefonun ivmeölçer, jiroskop ve GPS sensörlerinden toplanan veriler Node.js/Express tabanlı bir sunucuya iletilmekte; eşik tabanlı bir anomali tespit motoru ani fren, ani hızlanma, sert dönüş, sarsıntı ve beklenmeyen hızlanma gibi riskli davranışları belirlemektedir. Sonuçlar MongoDB'de saklanmakta, Socket.io ile web paneline canlı olarak yayınlanmakta ve harita üzerinde görselleştirilmektedir. Sistem; Jest birim testleri (13/13 başarılı) ve gerçek bir iOS cihazı üzerinde yapılan uçtan uca testlerle doğrulanmıştır. Föyde tanımlı zorunlu modüllerin tamamı karşılanmış; ayrıca Swagger, otomatik testler ve çevrimdışı veri tamponlama gibi bonus özellikler eklenmiştir.
+
+**Anahtar kelimeler:** sürücü davranışı, anomali tespiti, IoT, Node.js, gerçek zamanlı, mobil sensör.
+
+## Abstract
+
+This project presents a full-stack platform that turns a smartphone into an in-vehicle IoT device for real-time driver behavior analysis. Accelerometer, gyroscope and GPS data are streamed to a Node.js/Express backend, where a threshold-based anomaly engine detects risky maneuvers such as hard braking, rapid acceleration, sharp turns, shaking and sudden speed changes. Results are stored in MongoDB, broadcast live to a React dashboard via Socket.io, and visualized on a map. The system was verified through Jest unit tests (13/13 passing) and end-to-end testing on a real iOS device. All mandatory modules defined in the project brief were implemented, along with bonus features such as Swagger documentation, automated tests and offline data buffering.
+
+**Keywords:** driver behavior, anomaly detection, IoT, Node.js, real-time, mobile sensing.
+
+---
+
 ## 1. Gereksinim Analizi
 
 ### 1.1 Problem Tanımı
@@ -132,7 +146,7 @@ Detaylar: `docs/veri_modeli.md` veya doğrudan model dosyalarındaki yorum blokl
 | Validation | **express-validator** | Deklaratif istek doğrulama |
 | Logging | **winston + morgan** | Yapılandırılabilir log seviyesi |
 | API dok | **Swagger / OpenAPI** (swagger-jsdoc) | Bonus puan, interaktif test |
-| Mobil | **React Native + Expo** | JavaScript bilgimizle hızlı geliştirme, expo-sensors hazır |
+| Mobil | **React Native + Expo (SDK 54)** | JavaScript bilgimizle hızlı geliştirme, expo-sensors/expo-location hazır |
 | Web frontend | **React + Vite** | Modern SPA, hızlı dev server, HMR |
 | Görselleştirme | **Chart.js + react-chartjs-2** | Zaman serisi grafiği için |
 | Harita | **Leaflet + react-leaflet** | OpenStreetMap, ücretsiz, API anahtarı gerekmez |
@@ -142,10 +156,11 @@ Detaylar: `docs/veri_modeli.md` veya doğrudan model dosyalarındaki yorum blokl
 ## 7. Gerçekleştirilen Modüller
 
 ### 7.1 Mobil Veri Toplama Modülü (Föy 5.1) — `mobile/src/services/SensorService.js`
-- Expo Sensors ile ivmeölçer (m/s²) ve jiroskop (rad/s)
-- Expo Location ile GPS (lat, lon, speed)
-- Saniyede 2 sample (500 ms aralık)
-- Offline tampon (`OfflineBuffer.js`) — AsyncStorage, max 1000 sample
+- Expo Sensors ile ivmeölçer ve jiroskop (rad/s), Expo Location ile GPS (lat, lon, speed)
+- **Yerçekimi kompanzasyonu:** Ham ivme yerçekimini içerdiğinden, low-pass filtre ile yerçekimi tahmin edilip çıkarılır; böylece sürücünün gerçek hareket ivmesi (lineer ivme) ölçülür
+- Saniyede 2 örnek (500 ms aralık), ~3 sn'lik batch'lerle gönderim
+- Offline tampon (`OfflineBuffer.js`) — AsyncStorage, max 1000 örnek
+- React Native + Expo (SDK 54), gerçek iOS cihazında test edildi
 
 ### 7.2 Backend Modülü (Föy 5.2) — `backend/src/`
 - Express MVC mimarisi
@@ -191,41 +206,44 @@ Detaylar: `docs/veri_modeli.md` veya doğrudan model dosyalarındaki yorum blokl
 ## 8. Test Süreci
 
 ### 8.1 Birim Testleri (Jest)
-`backend/tests/detectors.test.js` — anomali detektörlerinin bilinen senaryolarla doğrulanması:
+`backend/tests/detectors.test.js` — anomali detektörleri bilinen senaryolarla test edildi ve **13 testin tamamı başarıyla geçti.**
 - Normal sürüş → alarm yok (kontrol grubu)
 - Eşik üstü değerler → doğru tür ve şiddette alarm
-- Edge case'ler: önceki sample yokken speeding null dönmeli vb.
+- Edge case'ler: önceki örnek yokken speeding null döner vb.
 
-Çalıştırma:
-```bash
-cd backend
-npm test
-```
+Çalıştırma: `cd backend && npm test`
 
-### 8.2 Manuel Entegrasyon Testi
-1. `npm run seed` ile örnek veriyi yükle.
-2. Backend + Dashboard'u aç, driver hesabıyla giriş yap.
-3. Trips sayfasında seed edilmiş trip'i görüntüle — 2 alarm görünmeli.
-4. TripDetail sayfasında haritada rota ve alarm marker'ları görünmeli.
+### 8.2 Uçtan Uca Entegrasyon Testi
+Tüm sistem (MongoDB + backend + web paneli) lokalde ayağa kaldırılarak doğrulandı:
+- Backend uç noktaları (health, login/JWT, sensor-data, trips, alarms) hatasız çalışıyor.
+- Anomali motoru API üzerinden **canlı alarm üretiyor** (ör. −5 m/s² fren verisi → ani fren alarmı).
+- Web paneli akışı: giriş → canlı grafik → sürüş detayı (harita) → alarmlar.
+- Socket.io ile canlı veri akışı ve alarm bildirimi (toast) ekran görüntüleriyle teyit edildi.
 
-### 8.3 Postman / Bruno Koleksiyonu
-Swagger UI üzerinden tüm endpoint'ler interaktif olarak test edilebilir.
+### 8.3 Gerçek Cihaz Testi (iOS)
+Mobil uygulama **gerçek bir iPhone** üzerinde Expo Go ile çalıştırıldı. Telefonun gerçek ivmeölçer, jiroskop ve GPS verisi backend'e iletildi; gerçek hareketlerle anomaliler tetiklendi ve web panelinde canlı olarak görüntülendi. Bu test, sistemin yalnızca simülasyonla değil, fiziksel sensörlerle de uçtan uca çalıştığını doğrulamıştır.
 
-## 9. Karşılaşılan Kısıtlar
+### 8.4 API Testi
+Swagger UI (`/api-docs`) üzerinden tüm uç noktalar interaktif olarak test edilebilir.
 
-1. **Gerçek araç testi eksikliği:** Eşik değerleri (örn. -3 m/s² ani fren) literatürden alındı; gerçek araç içi testle ince ayar yapmak ideal olurdu.
+## 9. Karşılaşılan Zorluklar ve Kısıtlar
 
-2. **Telefon yönelimi:** Telefonun konumlandırılma şekli ivme eksenlerini değiştirir. Üretim seviyesi bir çözümde "telefon kalibrasyonu" adımı eklenmesi gerekirdi.
+### 9.1 Çözülen Mühendislik Zorlukları
+Geliştirme ve gerçek cihaz testi sürecinde karşılaşılan ve çözülen başlıca problemler:
 
-3. **GPS hassasiyeti:** Şehir içinde GPS hatası ±10 m'ye çıkabilir; bu da "güzergâh dışına çıkma" detektörünü zorlaştırıyor (bu yüzden MVP'de yok).
+1. **Sensör gürültüsü:** Ham ivmeölçer her küçük titreşimde alarm üretiyordu. Hareketli ortalama (moving average) + 3 sn debounce ile yanlış alarmlar büyük ölçüde azaltıldı.
+2. **Yerçekimi etkisi:** Ham ivme yerçekimini içerdiğinden, telefon dik tutulduğunda bir eksen sürekli ~−9.8 m/s² okuyordu. Low-pass filtre ile yerçekimi tahmin edilip çıkarılarak lineer ivme (gerçek hareket) elde edildi.
+3. **Canlı veri akışı (stale closure):** Mobil tarafta `setInterval` içindeki gönderim fonksiyonu güncel sürüş değerini görmüyor, veri yalnızca sürüş bitince gidiyordu. React `ref` kullanılarak düzeltildi ve anlık akış sağlandı.
+4. **Araç zinciri uyumu:** Node.js 24 ile eski Expo SDK uyumsuzdu (`node:sea` hatası) ve test cihazının (iPhone 8) Expo Go sürümü yalnızca güncel SDK'ları destekliyordu. Proje Expo SDK 54'e hizalanarak çözüldü.
+5. **Geçersiz GPS hızı:** iOS, hız bilgisi mevcut olmadığında −1 döndürüyordu; negatif/geçersiz değerler 0 olarak işlenecek şekilde düzeltildi.
 
-4. **Mobil emülator vs. fiziksel cihaz:** Emülatorde gerçek hareket simüle edilemediği için anomali doğrulamayı gerçek cihazda yapmak şart.
-
-5. **Batarya tüketimi:** Sürekli GPS + sensör + WebSocket batarya tüketir. Üretimde "düşük güç modu" eklenmesi gerekir (örneklem sıklığını düşürme).
-
-6. **MongoDB scaling:** SensorData koleksiyonu hızlı büyür. Üretimde MongoDB Time Series Collection (5+) veya partitioning gerekir.
-
-7. **Süre kısıtı:** Bonus özelliklerin tamamı uygulanmadı (Docker, Python mikroservis, Raspberry Pi entegrasyonu, video yakalama).
+### 9.2 Mevcut Kısıtlar
+1. **Eşik kalibrasyonu:** Eşik değerleri (örn. −3 m/s² ani fren) literatürden alındı; geniş ölçekli gerçek araç testleriyle ince ayar yapmak idealdir.
+2. **Telefon yönelimi:** Telefonun konumlandırılma şekli ivme eksenlerini etkiler; üretim seviyesinde bir "kalibrasyon" adımı eklenmelidir.
+3. **GPS hassasiyeti:** Şehir içinde GPS hatası ±10 m'ye çıkabildiğinden "güzergâh dışına çıkma" detektörü MVP kapsamına alınmadı.
+4. **Batarya tüketimi:** Sürekli GPS + sensör + WebSocket batarya tüketir; üretimde örnekleme sıklığını düşüren bir "düşük güç modu" gerekir.
+5. **Veritabanı ölçekleme:** SensorData koleksiyonu hızlı büyür; üretimde MongoDB Time Series Collection veya bölümleme (partitioning) önerilir.
+6. **Süre kısıtı:** Bonusların tamamı uygulanmadı (Docker, Python mikroservis, Raspberry Pi entegrasyonu, video yakalama).
 
 ## 10. Sonuç
 
@@ -235,4 +253,4 @@ Proje föyünün **tüm zorunlu modülleri (5.1 - 5.8)** karşılanmıştır. Bo
 - Socket.io ile gelişmiş gerçek zamanlı yapı (+)
 - Offline veri tamponlama (+)
 
-Sistem, sürücü hareketlerini saniyede 2 örnek hızında izleyebilen, anomalileri 3 saniye içinde tespit edip yayınlayabilen, ekipçe geliştirilmesi kolay (monorepo + tipli kod + bol yorum) bir prototip olarak teslim edilmektedir.
+Sistem, sürücü hareketlerini saniyede 2 örnek hızında izleyebilen, anomalileri ~3 saniye içinde tespit edip yayınlayabilen, **gerçek bir iOS cihazında uçtan uca doğrulanmış**, ekipçe geliştirilmesi kolay (monorepo + bol yorumlu kod) çalışan bir prototip olarak teslim edilmektedir.
