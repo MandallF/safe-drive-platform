@@ -16,6 +16,8 @@ Projenin tanıtım ve demo videosu: **https://youtu.be/6PmYlBRM8Z4**
 
 ## Grup Üyeleri
 
+**Grup No: 12**
+
 | Numara | Ad Soyad |
 |---|---|
 | 23360859019 | Melike Rana Yozgatlı |

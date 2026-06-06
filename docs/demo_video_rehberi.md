@@ -56,7 +56,7 @@ Toplam hedef: **~3.5 - 4 dakika.** Anlatım (seslendirme) metinleri aşağıda; 
 
 ### 🎬 Açılış kartı (~8 sn)
 - **Ekranda:** Sunum dosyasının (`sunum/Guvenli_Surus_Sunum.pptx`) **kapak slaytı**. (Slaytı tam ekran aç veya Clipchamp'te başlık olarak ekle.)
-- **Anlatım:** *"Merhaba, biz Grup 4. Bugün Güvenli Sürüş ve Sürücü Davranışı Analizi Platformumuzu tanıtacağız."*
+- **Anlatım:** *"Merhaba, biz Grup 12. Bugün Güvenli Sürüş ve Sürücü Davranışı Analizi Platformumuzu tanıtacağız."*
 
 ### 🎬 Sahne 1 — Problem & Çözüm (~25 sn)
 - **Ekranda:** Login sayfası.

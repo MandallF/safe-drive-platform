@@ -25,7 +25,7 @@ const options = {
       version: '1.0.0',
       description: 'Sürücü davranış analizi backend\'i. Sensör verisi alır, anomali tespit eder, alarm yayınlar.',
       contact: {
-        name: 'Grup 4 — BTÜ Bilgisayar Mühendisliği'
+        name: 'Grup 12 — BTÜ Bilgisayar Mühendisliği'
       }
     },
     servers: [

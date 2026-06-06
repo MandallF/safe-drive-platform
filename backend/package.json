@@ -11,7 +11,7 @@
     "test": "jest --runInBand"
   },
   "keywords": ["nodejs", "express", "mongodb", "iot", "anomaly-detection"],
-  "author": "Grup 4 (BTÜ)",
+  "author": "Grup 12 (BTÜ)",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
