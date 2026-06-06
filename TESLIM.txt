@@ -11,7 +11,7 @@ GRUP ÜYELERİ
 
 BAĞLANTILAR
 - GitHub deposu : https://github.com/MandallF/safe-drive-platform
-- Demo videosu  : (YouTube'a yükledikten sonra linki buraya yapıştırın)
+- Demo videosu  : https://youtu.be/6PmYlBRM8Z4
 
 DEMO HESAPLARI
 - Sürücü : driver@example.com / driver123

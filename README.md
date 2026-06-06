@@ -10,6 +10,10 @@ Akıllı telefonun araç içerisinde bir IoT düğümü gibi kullanıldığı; i
 
 Sistem; Jest birim testleri (13/13) ve **gerçek bir iOS cihazı** üzerinde yapılan uçtan uca testlerle doğrulanmıştır.
 
+## Demo Videosu
+
+Projenin tanıtım ve demo videosu: **https://youtu.be/6PmYlBRM8Z4**
+
 ## Grup Üyeleri
 
 | Numara | Ad Soyad |
